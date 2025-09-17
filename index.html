@@ -1,11 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Welcome to My Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giggiplay Blog (Auto Posts)</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 0; }
+    header { background: #333; color: white; padding: 15px; text-align: center; }
+    .container { max-width: 800px; margin: auto; padding: 20px; }
+    .post { background: white; padding: 20px; margin-bottom: 20px; border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .post h2 { margin-top: 0; }
+    .post a { text-decoration: none; color: #333; }
+    .post a:hover { color: #0077cc; }
+  </style>
 </head>
 <body>
-  <h1>Hello! My 1st GitHub Pages Blog hai 🚀</h1>
-  <p>Jald hi yaha aur content aayega.</p>
+  <header>
+    <h1>Welcome to Healthy Life Blog</h1>
+    <p>Powered by Blogger + GitHub Pages 🚀</p>
+  </header>
+
+  <div class="container" id="feed">
+    <p>Loading latest posts...</p>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    const feedUrl = "https://healthylifeblog01.blogspot.com/feeds/posts/default?alt=json-in-script&callback=?";
+
+    $.getJSON(feedUrl, function(data) {
+      const entries = data.feed.entry;
+      let html = "";
+      $(entries).slice(0, 5).each(function(i, entry) {
+        const title = entry.title.$t;
+        const link = entry.link.find(l => l.rel === "alternate").href;
+        const content = entry.content.$t.substring(0, 150) + "...";
+        html += `
+          <div class="post">
+            <h2><a href="${link}" target="_blank">${title}</a></h2>
+            <p>${content}</p>
+          </div>`;
+      });
+      $("#feed").html(html);
+    }).fail(function() {
+      $("#feed").html("<p>Failed to load posts. Check feed URL.</p>");
+    });
+  </script>
 </body>
 </html>
